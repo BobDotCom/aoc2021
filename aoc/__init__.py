@@ -72,3 +72,87 @@ class AOC:
 
     def run(self, day: int = None, part: Optional[int] = None, *args, **kwargs):
         return self.__getattribute__(compile_method_name(day, part))(*args, **kwargs)
+
+    @wrap_input(1, 1)
+    def day_1_part_1(self, data: str) -> int:
+        """Day 1: Sonar Sweep - Part 1
+
+        We need to count the number of times a measurement increases from the previous measurement, and return the sum
+        of that count.
+
+        .. code-block::
+
+            199 (N/A - no previous measurement)
+            200 (increased)
+            208 (increased)
+            210 (increased)
+            200 (decreased)
+            207 (increased)
+            240 (increased)
+            269 (increased)
+            260 (decreased)
+            263 (increased)
+
+        In this example, there are 7 measurements that are larger than the previous measurement.
+
+        Parameters
+        ----------
+        data: str
+            The input data.
+
+        Returns
+        -------
+        int
+            The sum of the number of measurements that are larger than the previous measurement.
+        """
+        data = data.strip().splitlines()
+        return sum(int(x) > int(y) for x, y in zip(data[1:], data))
+
+    @wrap_input(1, 1)
+    def day_1_part_2(self, data: str) -> int:
+        """Day 1: Sonar Sweep - Part 2
+
+        We need to do the same thing as before, but use a sliding window of size 3, and compare those groups.
+
+        .. code-block::
+
+            199  A
+            200  A B
+            208  A B C
+            210    B C D
+            200  E   C D
+            207  E F   D
+            240  E F G
+            269    F G H
+            260      G H
+            263        H
+
+        .. code-block::
+
+            A: 607 (N/A - no previous sum)
+            B: 618 (increased)
+            C: 618 (no change)
+            D: 617 (decreased)
+            E: 647 (increased)
+            F: 716 (increased)
+            G: 769 (increased)
+            H: 792 (increased)
+
+        In this example, there are 5 sums that are larger than the previous sum.
+
+        Parameters
+        ----------
+        data: str
+            The input data.
+
+        Returns
+        -------
+        int
+            The sum of the number of sums that are larger than the previous sum.
+        """
+        data = [sum(int(i) for i in win) for win in sliding_window(data.strip().splitlines(), 3)]
+        return sum(int(x) > int(y) for x, y in zip(data[1:], data))
+
+    def day_1(self):
+        # noinspection PyArgumentList
+        return self.day_1_part_1(), self.day_1_part_2()
