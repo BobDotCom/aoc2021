@@ -62,9 +62,13 @@ def sliding_window(iterable, n):
         yield tuple(window)
 
 
+def compile_method_name(day: int = None, part: Optional[int] = None):
+    return f"day_{day}" + (f"_part_{part}" if part else "")
+
+
 class AOC:
     def __init__(self):
         self.inputs = Inputs()
 
     def run(self, day: int = None, part: Optional[int] = None, *args, **kwargs):
-        return self.__getattribute__(f"day_{day}" + (f"_part_{part}" if part else ""))(*args, **kwargs)
+        return self.__getattribute__(compile_method_name(day, part))(*args, **kwargs)
