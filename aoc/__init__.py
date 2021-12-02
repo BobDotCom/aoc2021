@@ -1,5 +1,6 @@
 import collections
 import itertools
+import math
 import os
 from collections import UserDict
 from typing import Optional, Dict
@@ -156,3 +157,52 @@ class AOC:
     def day_1(self):
         # noinspection PyArgumentList
         return self.day_1_part_1(), self.day_1_part_2()
+
+    @wrap_input(2, 1)
+    def day_2_part_1(self, data: str) -> int:
+        """Day 2: Dive! - Part 1
+
+
+        """
+        data = data.strip().splitlines()
+        position = {
+            "horizontal": 0,
+            "vertical": 0,
+        }
+        for entry in data:
+            action, amount = entry.split()
+            match action:
+                case "forward":
+                    position["horizontal"] += int(amount)
+                case "down":
+                    position["vertical"] += int(amount)
+                case "up":
+                    position["vertical"] -= int(amount)
+        return math.prod(position.values())
+
+    @wrap_input(2, 1)
+    def day_2_part_2(self, data: str) -> int:
+        """Day 2: Dive! - Part 2
+        """
+        data = data.strip().splitlines()
+        position = {
+            "horizontal": 0,
+            "vertical": 0,
+            "aim": 0,
+        }
+        for entry in data:
+            action, amount = entry.split()
+            match action:
+                case "down":
+                    position["aim"] += int(amount)
+                case "up":
+                    position["aim"] -= int(amount)
+                case "forward":
+                    position["horizontal"] += int(amount)
+                    position["vertical"] += position["aim"] * int(amount)
+        del position["aim"]
+        return math.prod(position.values())
+
+    def day_2(self):
+        # noinspection PyArgumentList
+        return self.day_2_part_1(), self.day_2_part_2()
