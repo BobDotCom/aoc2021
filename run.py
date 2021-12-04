@@ -1,8 +1,8 @@
 import datetime
+import time
 import traceback
 
 from aoc import AOC, compile_method_name
-
 
 aoc = AOC()
 
@@ -22,4 +22,8 @@ for day in range(1, 26):
                                      "Let the developers know to update the code!")
             except AttributeError:
                 traceback.print_exc()
-    print(f"Day {day}: {aoc.run(day)}")
+    start = time.perf_counter()
+    out = aoc.run(day)
+    end = time.perf_counter()
+
+    print(f"Day {day}: {out} (Calculated in {(end - start) * 1000:.2f}ms)")
