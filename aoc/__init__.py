@@ -1,9 +1,9 @@
-import collections
-import itertools
 import math
 import os
 from collections import UserDict
 from typing import Optional, Dict
+
+from .helpers import *
 
 
 class Inputs(UserDict):
@@ -49,18 +49,10 @@ def wrap_input(day, part):
         def wrapper(self, *args, **kwargs):
             data = Inputs.load_part(day, part)
             return func(self, data, *args, **kwargs)
+
         return wrapper
+
     return wrap
-
-
-def sliding_window(iterable, n):
-    it = iter(iterable)
-    window = collections.deque(itertools.islice(it, n), maxlen=n)
-    if len(window) == n:
-        yield tuple(window)
-    for x in it:
-        window.append(x)
-        yield tuple(window)
 
 
 def compile_method_name(day: int = None, part: Optional[int] = None):
@@ -151,7 +143,9 @@ class AOC:
         int
             The sum of the number of sums that are larger than the previous sum.
         """
-        data = [sum(int(i) for i in win) for win in sliding_window(data.strip().splitlines(), 3)]
+
+        data = [sum(int(i) for i in win) for win in Day1.triplewise(data.strip().splitlines())]
+
         return sum(int(x) > int(y) for x, y in zip(data[1:], data))
 
     def day_1(self):
@@ -165,10 +159,12 @@ class AOC:
 
         """
         data = data.strip().splitlines()
+
         position = {
             "horizontal": 0,
             "vertical": 0,
         }
+
         for entry in data:
             action, amount = entry.split()
             match action:
@@ -178,6 +174,7 @@ class AOC:
                     position["vertical"] += int(amount)
                 case "up":
                     position["vertical"] -= int(amount)
+
         return math.prod(position.values())
 
     @wrap_input(2, 1)
@@ -185,11 +182,13 @@ class AOC:
         """Day 2: Dive! - Part 2
         """
         data = data.strip().splitlines()
+
         position = {
             "horizontal": 0,
             "vertical": 0,
             "aim": 0,
         }
+
         for entry in data:
             action, amount = entry.split()
             match action:
@@ -200,9 +199,36 @@ class AOC:
                 case "forward":
                     position["horizontal"] += int(amount)
                     position["vertical"] += position["aim"] * int(amount)
+
         del position["aim"]
+
         return math.prod(position.values())
 
     def day_2(self):
         # noinspection PyArgumentList
         return self.day_2_part_1(), self.day_2_part_2()
+
+    @wrap_input(3, 1)
+    def day_3_part_1(self, data: str) -> int:
+        """Day 3: Binary Diagnostic - Part 1
+        """
+        data = data.strip().splitlines()
+        gamma = Day3.gamma(data)
+        epsilon = Day3.epsilon(data)
+
+        return Day3.to_decimal(gamma) * Day3.to_decimal(epsilon)
+
+    @wrap_input(3, 1)
+    def day_3_part_2(self, data: str) -> int:
+        """Day 3: Binary Diagnostic - Part 2
+        """
+        data = data.strip().splitlines()
+
+        oxygen_rating = Day3.check_criteria(data, Day3.Rating.OXYGEN)
+        co2_rating = Day3.check_criteria(data, Day3.Rating.CO2)
+
+        return Day3.to_decimal(oxygen_rating) * Day3.to_decimal(co2_rating)
+
+    def day_3(self):
+        # noinspection PyArgumentList
+        return self.day_3_part_1(), self.day_3_part_2()
